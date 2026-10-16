@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E-book Serba Guna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600;7..72,700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F5FA; --panel:#FFFFFF; --ink:#142038; --muted:#5B6882; --line:#D9DFEC;
+  --hero:#16275A; --hero-ink:#F2F5FF; --hero-muted:#B7C3E6;
+  --brand:#2447C7; --brand-ink:#FFFFFF; --accent:#F0B429; --danger:#B3321F; --ok:#1E8A5A;
+  --ui:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --read:"Literata",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C1226; --panel:#141C36; --ink:#E7ECFA; --muted:#93A0C2; --line:#25305A;
+    --hero:#101B45; --hero-ink:#F2F5FF; --hero-muted:#A9B7E0;
+    --brand:#7C98FF; --brand-ink:#0A1230; --danger:#FF8D7A; --ok:#5FD0A0; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C1226; --panel:#141C36; --ink:#E7ECFA; --muted:#93A0C2; --line:#25305A;
+  --hero:#101B45; --hero-ink:#F2F5FF; --hero-muted:#A9B7E0;
+  --brand:#7C98FF; --brand-ink:#0A1230; --danger:#FF8D7A; --ok:#5FD0A0; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.55}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{width:min(1080px,100% - 32px);margin:0 auto}
+
+/* bilah atas */
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0}
+.status{display:inline-flex;align-items:center;gap:8px;font-size:.8125rem;color:var(--hero-muted)}
+.dot{width:9px;height:9px;border-radius:50%;background:#C98A1B}
+.status.on .dot{background:#47D69B}
+.status.err .dot{background:#FF7B66}
+.linkbtn{background:none;border:0;color:var(--hero-muted);font-size:.8125rem;text-decoration:underline;padding:4px}
+
+/* hero */
+.hero{background:var(--hero);color:var(--hero-ink)}
+.hero-body{padding:40px 0 56px;max-width:720px}
+.hero h1{margin:0 0 16px;font-family:var(--read);font-weight:700;font-size:clamp(2.1rem,6vw,3.5rem);line-height:1.1;letter-spacing:-.01em}
+.hero p{margin:0 0 28px;font-size:1.125rem;color:var(--hero-muted);max-width:60ch}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px 18px;font-weight:700;min-height:44px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#1B1400}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.blue{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.danger{color:var(--danger)}
+.btn.small{padding:4px 12px;min-height:34px;font-size:.8125rem}
+.btn:disabled{opacity:.6;cursor:wait}
+
+/* rak */
+.shelf{padding:36px 0 80px}
+.shelf-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.shelf-head h2{margin:0;font-family:var(--read);font-size:1.5rem}
+.search{width:min(300px,100%);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:28px 22px}
+.book{display:flex;flex-direction:column;gap:10px}
+.cover{position:relative;aspect-ratio:3/4;border-radius:4px 10px 10px 4px;border:0;text-align:left;padding:20px 18px 18px 26px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;
+  box-shadow:inset 10px 0 0 rgba(0,0,0,.22), inset 11px 0 0 rgba(255,255,255,.12), 0 8px 18px rgba(10,20,50,.22);transition:transform .15s}
+.cover:hover{transform:translateY(-4px)}
+.cover-title{font-family:var(--read);font-weight:700;font-size:1.2rem;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow-wrap:anywhere}
+.cover-meta{font-size:.8125rem;opacity:.85}
+.book-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.8125rem;color:var(--muted)}
+.empty{padding:56px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
+.empty h3{margin:0 0 6px;font-family:var(--read);color:var(--ink);font-size:1.25rem}
+
+/* baca */
+.reader{padding:28px 0 100px}
+.reader-in{max-width:720px;margin:0 auto}
+.reader-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.reader h1{font-family:var(--read);font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.2;margin:0 0 8px;overflow-wrap:anywhere}
+.reader .meta{margin:0 0 32px;color:var(--muted);font-size:.875rem;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.prose{font-family:var(--read);font-size:1.125rem;line-height:1.8;overflow-wrap:anywhere}
+.prose p{margin:0 0 1.1em}
+.prose h4{font-family:var(--ui);font-size:1.0625rem;margin:1.6em 0 .5em}
+.prose ul{margin:0 0 1.1em;padding-left:1.4em}
+.prose li{margin-bottom:.35em}
+
+/* dialog */
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--ink);padding:24px;width:min(640px,calc(100% - 24px));max-height:calc(100% - 24px)}
+dialog::backdrop{background:rgba(4,8,24,.6)}
+dialog h3{margin:0 0 4px;font-family:var(--read);font-size:1.4rem}
+.hint{margin:0 0 8px;color:var(--muted);font-size:.875rem}
+label{display:block;font-weight:700;font-size:.875rem;margin:14px 0 6px}
+input[type=text],textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+textarea{min-height:260px;resize:vertical;line-height:1.6}
+.row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+
+.banner{background:#FFF1EE;color:#7A1F10;border:1px solid #F3B6AA;border-radius:10px;padding:12px 14px;margin-bottom:20px;font-size:.9rem}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .banner{background:#3A1712;color:#FFC9BE;border-color:#7A3326}}
+:root[data-theme="dark"] .banner{background:#3A1712;color:#FFC9BE;border-color:#7A3326}
+
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:.875rem;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 32px);z-index:20}
+.toast.show{opacity:1}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){.cover{transition:none}.cover:hover{transform:none}.toast{transition:none}}
+</style>
+</head>
+<body>
+
+<!-- ===== HALAMAN UTAMA ===== -->
+<div id="home">
+  <header class="hero">
+    <div class="wrap">
+      <div class="topbar">
+        <span class="status" id="status"><span class="dot"></span><span id="statusText">Menghubungkan...</span></span>
+        <button class="linkbtn" id="btnTheme" type="button">Ganti tema</button>
+      </div>
+      <div class="hero-body">
+        <h1>E-book Serba Guna</h1>
+        <p>Selamat datang di e-book serba guna. Di sini kamu bisa membaca e-book yang tersedia, menambahkan e-book apa saja, dan menghapus e-booknya.</p>
+        <div class="hero-actions">
+          <button class="btn primary" id="btnAdd" type="button">Tambah e-book</button>
+          <a class="linkbtn" href="#rak" style="font-size:.9375rem">Lihat e-book yang tersedia</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shelf" id="rak">
+    <div class="wrap">
+      <div id="banner" class="banner" hidden></div>
+      <div class="shelf-head">
+        <h2 id="shelfTitle">E-book tersedia</h2>
+        <input class="search" id="search" type="search" placeholder="Cari judul atau isi" aria-label="Cari e-book">
+      </div>
+      <ul class="grid" id="grid"></ul>
+      <div class="empty" id="empty" hidden></div>
+    </div>
+  </main>
+</div>
+
+<!-- ===== HALAMAN BACA ===== -->
+<div id="readerPage" hidden>
+  <div class="wrap reader">
+    <div class="reader-in">
+      <div class="reader-top">
+        <button class="btn" id="btnBack" type="button">Kembali</button>
+        <button class="btn danger" id="btnDelete" type="button">Hapus e-book</button>
+      </div>
+      <article id="article"></article>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FORM TAMBAH ===== -->
+<dialog id="dlg">
+  <form id="form" autocomplete="off">
+    <h3>Tambah e-book</h3>
+    <p class="hint">Isi judul dan ilmunya. Setelah menekan Created, e-book langsung muncul di rak dan ikut terlihat di semua perangkat.</p>
+    <label for="inTitle">Judul e-book</label>
+    <input type="text" id="inTitle" maxlength="150" placeholder="Contoh: Cara mengendalikan emosi" required>
+    <label for="inContent">Isi teks atau ilmunya</label>
+    <textarea id="inContent" placeholder="Tempel teks dari AI atau tulis sendiri di sini" required></textarea>
+    <div class="row">
+      <button class="btn blue" type="submit" id="btnCreate">Created</button>
+      <button class="btn" type="button" id="btnCancel">Batal</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+(function(){
+  var DB_URL = "https://intivictus-default-rtdb.asia-southeast1.firebasedatabase.app/";
+  var PATH = "ebooks";
+  var COLORS = ["#2447C7","#7A2E3B","#1F6F5C","#8A5A12","#5B3F9A","#0F6E8C","#9A3F2A","#3D4F8F"];
+  var $ = function(id){ return document.getElementById(id); };
+
+  var books = [];          // {id,title,content,createdAt}
+  var loaded = false;
+  var ref = null;
+
+  function toast(msg){
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toast._t); toast._t = setTimeout(function(){ t.classList.remove("show"); }, 2800);
+  }
+  function setStatus(kind, text){
+    var s = $("status"); s.className = "status " + kind; $("statusText").textContent = text;
+  }
+  function showBanner(msg){
+    var b = $("banner");
+    if(msg){ b.textContent = msg; b.hidden = false; } else { b.hidden = true; }
+  }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function colorFor(str){
+    var h = 0; for(var i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
+    return COLORS[h % COLORS.length];
+  }
+  function words(t){ t = (t||"").trim(); return t ? t.split(/\s+/).length : 0; }
+  function dateStr(ts){
+    if(!ts) return "";
+    try{ return new Date(ts).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}); }catch(e){ return ""; }
+  }
+
+  /* pemformat ringan: ## judul, - daftar, **tebal**, *miring* */
+  function inline(s){
+    return esc(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+                 .replace(/(^|[\s(])\*(?!\s)(.+?)\*(?=[\s).,!?:;]|$)/g,"$1<em>$2</em>");
+  }
+  function format(text){
+    var lines = String(text).replace(/\r\n/g,"\n").split("\n");
+    var out = [], para = [], list = [];
+    function fp(){ if(para.length){ out.push("<p>"+para.map(inline).join("<br>")+"</p>"); para = []; } }
+    function fl(){ if(list.length){ out.push("<ul>"+list.map(function(l){return "<li>"+inline(l)+"</li>";}).join("")+"</ul>"); list = []; } }
+    lines.forEach(function(raw){
+      var line = raw.trim(), m;
+      if(!line){ fp(); fl(); return; }
+      if((m = line.match(/^#{1,6}\s+(.*)$/))){ fp(); fl(); out.push("<h4>"+inline(m[1])+"</h4>"); return; }
+      if((m = line.match(/^[-*•]\s+(.*)$/))){ fp(); list.push(m[1]); return; }
+      fl(); para.push(line);
+    });
+    fp(); fl();
+    return out.join("");
+  }
+
+  /* ---------- tampilan rak ---------- */
+  function renderShelf(){
+    var q = $("search").value.trim().toLowerCase();
+    var list = books.filter(function(b){
+      return !q || b.title.toLowerCase().indexOf(q) > -1 || b.content.toLowerCase().indexOf(q) > -1;
+    });
+    var grid = $("grid"), empty = $("empty");
+    grid.innerHTML = "";
+    $("shelfTitle").textContent = books.length ? "E-book tersedia (" + books.length + ")" : "E-book tersedia";
+
+    if(!list.length){
+      empty.hidden = false;
+      if(!loaded){
+        empty.innerHTML = "<h3>Memuat e-book...</h3><p>Mengambil data dari database.</p>";
+      } else if(books.length){
+        empty.innerHTML = "<h3>Tidak ditemukan</h3><p>Tidak ada e-book yang cocok dengan pencarianmu.</p>";
+      } else {
+        empty.innerHTML = "<h3>Belum ada e-book</h3><p>Tekan Tambah e-book, isi judul dan ilmunya, lalu tekan Created.</p>";
+      }
+      return;
+    }
+    empty.hidden = true;
+
+    list.forEach(function(b){
+      var li = document.createElement("li");
+      li.className = "book";
+      li.innerHTML =
+        '<button class="cover" type="button" style="background:'+colorFor(b.id)+'" aria-label="Baca '+esc(b.title)+'">'+
+          '<span class="cover-title">'+esc(b.title)+'</span>'+
+          '<span class="cover-meta">'+words(b.content)+' kata</span>'+
+        '</button>'+
+        '<div class="book-foot"><span>'+esc(dateStr(b.createdAt))+'</span>'+
+        '<button class="btn small danger" type="button">Hapus</button></div>';
+      li.querySelector(".cover").addEventListener("click", function(){ location.hash = "#/baca/" + b.id; });
+      li.querySelector(".btn").addEventListener("click", function(){ removeBook(b); });
+      grid.appendChild(li);
+    });
+  }
+
+  /* ---------- tampilan baca ---------- */
+  function renderReader(id){
+    var b = books.find(function(x){ return x.id === id; });
+    var art = $("article");
+    if(!b){
+      art.innerHTML = loaded
+        ? '<h1>E-book tidak ditemukan</h1><p class="meta" style="border:0">E-book ini mungkin sudah dihapus. Kembali ke rak untuk memilih yang lain.</p>'
+        : '<p class="meta" style="border:0">Memuat e-book...</p>';
+      $("btnDelete").hidden = true;
+      return;
+    }
+    $("btnDelete").hidden = false;
+    art.innerHTML =
+      '<h1>'+esc(b.title)+'</h1>'+
+      '<p class="meta">'+words(b.content)+' kata, ditambahkan '+esc(dateStr(b.createdAt))+'</p>'+
+      '<div class="prose">'+format(b.content)+'</div>';
+    document.title = b.title + " - E-book Serba Guna";
+  }
+
+  /* ---------- routing ---------- */
+  function currentId(){
+    var m = location.hash.match(/^#\/baca\/(.+)$/);
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+  function route(){
+    var id = currentId();
+    if(id){
+      $("home").hidden = true; $("readerPage").hidden = false;
+      renderReader(id); window.scrollTo(0,0);
+    } else {
+      $("home").hidden = false; $("readerPage").hidden = true;
+      document.title = "E-book Serba Guna";
+      renderShelf();
+    }
+  }
+  window.addEventListener("hashchange", route);
+
+  /* ---------- aksi ---------- */
+  function removeBook(b){
+    if(!ref) return;
+    if(!confirm('Hapus e-book "'+b.title+'"? Tindakan ini tidak bisa dibatalkan.')) return;
+    ref.child(b.id).remove().then(function(){
+      toast("E-book dihapus.");
+      if(currentId() === b.id) location.hash = "";
+    }).catch(writeError);
+  }
+  function writeError(err){
+    var denied = err && /permission/i.test(String(err.message || err.code));
+    toast(denied ? "Ditolak oleh Rules Firebase. Aktifkan izin tulis dulu." : "Gagal menyimpan. Periksa koneksi internet.");
+  }
+
+  $("btnDelete").addEventListener("click", function(){
+    var b = books.find(function(x){ return x.id === currentId(); });
+    if(b) removeBook(b);
+  });
+  $("btnBack").addEventListener("click", function(){ location.hash = ""; });
+  $("search").addEventListener("input", renderShelf);
+
+  var dlg = $("dlg");
+  $("btnAdd").addEventListener("click", function(){
+    if(!ref){ toast("Database belum terhubung."); return; }
+    $("form").reset(); dlg.showModal(); $("inTitle").focus();
+  });
+  $("btnCancel").addEventListener("click", function(){ dlg.close(); });
+
+  $("form").addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var title = $("inTitle").value.trim(), content = $("inContent").value.trim();
+    if(!title || !content){ toast("Judul dan isi wajib diisi."); return; }
+    var btn = $("btnCreate"); btn.disabled = true; btn.textContent = "Menyimpan...";
+    ref.push({ title: title, content: content, createdAt: firebase.database.ServerValue.TIMESTAMP })
+      .then(function(){
+        dlg.close(); toast("E-book berhasil dibuat.");
+        if(currentId()) location.hash = "";
+        else $("rak").scrollIntoView({behavior:"smooth"});
+      })
+      .catch(writeError)
+      .then(function(){ btn.disabled = false; btn.textContent = "Created"; });
+  });
+
+  /* ---------- tema ---------- */
+  function isDark(){
+    var t = document.documentElement.getAttribute("data-theme");
+    if(t) return t === "dark";
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  try{ var st = localStorage.getItem("ebook-theme"); if(st) document.documentElement.setAttribute("data-theme", st); }catch(e){}
+  $("btnTheme").addEventListener("click", function(){
+    var n = isDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", n);
+    try{ localStorage.setItem("ebook-theme", n); }catch(e){}
+  });
+
+  /* ---------- firebase ---------- */
+  function start(){
+    if(typeof firebase === "undefined"){
+      setStatus("err", "Tidak terhubung");
+      showBanner("Library Firebase gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.");
+      loaded = true; route(); return;
+    }
+    firebase.initializeApp({ databaseURL: DB_URL });
+    var db = firebase.database();
+    ref = db.ref(PATH);
+
+    db.ref(".info/connected").on("value", function(s){
+      if(s.val() === true) setStatus("on", "Tersinkron otomatis");
+      else setStatus("", "Menghubungkan...");
+    });
+
+    ref.on("value", function(snap){
+      var val = snap.val() || {};
+      books = Object.keys(val).map(function(k){
+        var v = val[k] || {};
+        return { id:k, title:String(v.title||"Tanpa judul"), content:String(v.content||""), createdAt:v.createdAt||0 };
+      }).sort(function(a,b){ return b.createdAt - a.createdAt; });
+      loaded = true; showBanner(null); route();
+    }, function(err){
+      loaded = true; setStatus("err", "Akses ditolak");
+      showBanner("Tidak bisa membaca database. Buka Firebase Console, Realtime Database, Rules, lalu izinkan baca dan tulis pada jalur 'ebooks'. Pesan: " + (err && err.message ? err.message : err));
+      route();
+    });
+  }
+
+  route();
+  start();
+})();
+</script>
+</body>
+</html>
